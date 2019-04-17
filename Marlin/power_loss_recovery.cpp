@@ -137,8 +137,14 @@ void check_print_job_recovery() {
           strcpy_P(job_recovery_commands[ind++], PSTR("M420 S0 Z0"));               // Leveling off before G92 or G28
         #endif
 
+        /* for 3d printer that use mesh bed levelin use t gcode M211 for down extrudor tu height desired 
+        example:
+         strcpy_P(job_recovery_commands[ind++], PSTR("M211 S0"));  // S0 disable to protect firmware 
+         this line please put under of:
+          strcpy_P(job_recovery_commands[ind++], PSTR("G92.0 Z0"));
+        */
         strcpy_P(job_recovery_commands[ind++], PSTR("G92.0 Z0"));                   // Ensure Z is equal to 0
-        strcpy_P(job_recovery_commands[ind++], PSTR("G1 Z2"));                      // Raise Z by 2mm (we hope!)
+        strcpy_P(job_recovery_commands[ind++], PSTR("G1 Z0"));                      // no raise Z
         strcpy_P(job_recovery_commands[ind++], PSTR("G28 R0"
           #if ENABLED(MARLIN_DEV_MODE)
             " S"
@@ -158,7 +164,7 @@ void check_print_job_recovery() {
           }
         #endif
 
-        dtostrf(job_recovery_info.current_position[Z_AXIS] + 2, 1, 3, str_1);
+        dtostrf(job_recovery_info.current_position[Z_AXIS] , 1, 3, str_1); // in this line remove + 2 
         dtostrf(job_recovery_info.current_position[E_CART]
           #if ENABLED(SAVE_EACH_CMD_MODE)
             - 5
